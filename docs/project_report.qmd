@@ -1,0 +1,112 @@
+---
+title: "Facebook Women Organization Posts Database: Project Report"
+author: "Peixuan Xu; Chloe Lau"
+date: "2025-08-08"
+format: html
+toc: true
+toc-title: "Contents"
+number-sections: true
+---
+
+# 1. Introduction
+
+This project analyzes Facebook posts from women's organizations to understand how content features influence audience engagement.  
+The dataset includes **textual content**, **media information**, and **engagement metrics** (likes, shares, comments), as well as **page-level metadata** such as organization type, number of followers, and verification status.
+
+The main research goals are:
+
+- To **identify features** of Facebook posts that contribute to higher engagement.
+- To analyze **sentiment patterns** in post text and organization descriptions.
+- To develop a **neural network model** that predicts engagement based on post characteristics.
+
+---
+
+# 2. Dataset Overview
+
+The dataset contains the following types of information:
+
+- **Post Metadata**: Date, time, type (photo, video, link, status)
+- **Text Content**: Title, caption, description, message
+- **Engagement Metrics**: Number of likes, shares, comments
+- **Page Metadata**: Account name, handle, category, description, creation date, subscriber count, verification status
+- **Custom Labels**: Organization category (e.g., feminist org, community group)
+- **Media Info**: Links or references to images, videos, or external pages
+
+A detailed **data dictionary** is available in `docs/data_dictionary.md`.
+
+---
+
+# 3. Analysis Plan
+
+## 3.1 Data Cleaning (R)
+- Standardize date and time formats.
+- Handle missing values and inconsistent text encoding.
+- Normalize categorical values (e.g., standardize `type` labels).
+- Remove duplicate posts.
+
+## 3.2 Exploratory Data Analysis (Python)
+- **Missingness Analysis**: Identify patterns of missing data across columns.
+- **Distribution Checks**: Count of post types, engagement ranges, posting time patterns.
+- **Visualization**: Histograms, bar charts, and time-series trends.
+
+## 3.3 Sentiment Analysis (Python)
+- Apply sentiment analysis to:
+  - **`message` column**: Main post text.
+  - **`account.pageDescription` column**: Organization’s “about” section.
+- Metrics to extract:
+  - **Polarity** (positive to negative scale)
+  - **Subjectivity** (objective vs. subjective tone)
+- Store sentiment scores as new columns for modeling.
+
+## 3.4 Predictive Modeling with Neural Networks (R)
+- **Target Variable**: Engagement level (likes, shares, comments — combined or separate).
+- **Features**:
+  - Post type
+  - Posting time
+  - Text sentiment scores
+  - Page metadata (followers, verification, category)
+- **Approach**:
+  - Split dataset into training, validation, and test sets.
+  - Use feed-forward neural network with appropriate activation functions.
+  - Tune hyperparameters for optimal performance.
+  - Evaluate using metrics such as accuracy, MAE, RMSE (depending on regression/classification framing).
+
+## 3.5 Documentation & Reporting
+- Maintain a **data dictionary** (`.md` format) for transparency.
+- This Quarto report documents:
+  - Data sources and processing steps
+  - Analytical methods
+  - Modeling workflow
+  - Key findings and visualizations
+
+---
+
+# 4. Expected Outcomes
+
+Through this analysis, we expect to:
+
+1. Identify which **content features** (e.g., sentiment, type, time) correlate with higher engagement.
+2. Understand **sentiment tendencies** in posts and page descriptions.
+3. Develop a **predictive model** to estimate post engagement.
+4. Provide **practical recommendations** for women’s organizations to enhance their social media strategy.
+
+---
+
+# 5. Tools and Technologies
+
+- **R**: Data cleaning, neural network modeling  
+- **Python**: Sentiment analysis, EDA  
+- **Quarto**: Documentation and reporting  
+- **Markdown**: Data dictionary and supplementary notes  
+
+---
+
+# 6. Next Steps
+
+- Finalize data preprocessing scripts.
+- Complete sentiment analysis pipeline.
+- Train and evaluate neural network model.
+- Integrate results into visualizations for stakeholder interpretation.
+- Publish final report with actionable insights.
+
+---
