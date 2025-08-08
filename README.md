@@ -25,6 +25,7 @@ We focus on uncovering how different post features (e.g., tone, content type, en
 │   ├── data_dictionary.md       # Data dictionary for all columns
 │   ├── project_report.qmd       # Quarto file with detailed project explanation
 └── README.md                    # This file
+```
 
 ---
 
