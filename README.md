@@ -20,7 +20,7 @@ We focus on uncovering how different post features (e.g., tone, content type, en
 │   ├── sentiment_message.py     # Sentiment analysis for 'message' column (Python)
 │   ├── sentiment_description.py # Sentiment analysis for 'page.description' column (Python)
 │   ├── neural_network.R         # Neural network modeling (R)
-│   ├── eda_missingness.py       # Exploratory Data Analysis for missingness (Python)
+│   ├── eda_missingness.ipynb    # Exploratory Data Analysis for missingness (Python)
 ├── docs/
 │   ├── data_dictionary.md       # Data dictionary for all columns
 │   ├── project_report.qmd       # Quarto file with detailed project explanation
