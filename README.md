@@ -12,18 +12,19 @@ We focus on uncovering how different post features (e.g., tone, content type, en
 
 ## 📂 Repository Structure
 
+```plaintext
 .
-├── data/ # Raw and cleaned datasets
+├── data/                       # Raw and cleaned datasets
 ├── scripts/
-│ ├── data_cleaning.R # Data cleaning and preprocessing (R)
-│ ├── sentiment_message.py # Sentiment analysis for 'message' column (Python)
-│ ├── sentiment_description.py # Sentiment analysis for 'page.description' column (Python)
-│ ├── neural_network.R # Neural network modeling (R)
-│ ├── eda_missingness.py # Exploratory Data Analysis for missingness (Python)
+│   ├── data_cleaning.R          # Data cleaning and preprocessing (R)
+│   ├── sentiment_message.py     # Sentiment analysis for 'message' column (Python)
+│   ├── sentiment_description.py # Sentiment analysis for 'page.description' column (Python)
+│   ├── neural_network.R         # Neural network modeling (R)
+│   ├── eda_missingness.py       # Exploratory Data Analysis for missingness (Python)
 ├── docs/
-│ ├── data_dictionary.md # Data dictionary for all columns
-│ ├── project_report.qmd # Quarto file with detailed project explanation
-└── README.md # This file
+│   ├── data_dictionary.md       # Data dictionary for all columns
+│   ├── project_report.qmd       # Quarto file with detailed project explanation
+└── README.md                    # This file
 
 ---
 
