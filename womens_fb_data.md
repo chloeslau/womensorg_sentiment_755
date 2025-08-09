@@ -3,9 +3,26 @@ editor: visual
 execute:
   echo: true
   output: true
-title: Neural Network Predictive Modeling
+title: Facebook Groups Data Cleaning
 toc-title: Table of contents
+toc_depth: 4
 ---
+
+-   [read in full
+    dataset](#read-in-full-dataset){#toc-read-in-full-dataset}
+-   [Variable selection](#variable-selection){#toc-variable-selection}
+-   [Checking variable
+    levels](#checking-variable-levels){#toc-checking-variable-levels}
+-   [Addressing
+    missingness](#addressing-missingness){#toc-addressing-missingness}
+    -   [Removing empty
+        observations](#removing-empty-observations){#toc-removing-empty-observations}
+    -   [New binary
+        variables](#new-binary-variables){#toc-new-binary-variables}
+-   [Changing date
+    variables](#changing-date-variables){#toc-changing-date-variables}
+-   [Date split](#date-split){#toc-date-split}
+-   [Save cleaned file](#save-cleaned-file){#toc-save-cleaned-file}
 
 ::: cell
 ``` {.r .cell-code}
