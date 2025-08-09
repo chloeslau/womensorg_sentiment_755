@@ -16,6 +16,7 @@ We focus on uncovering how different post features (e.g., tone, content type, en
 .
 ├── scripts/
 │   ├── data_cleaning.rmd           # Data cleaning and preprocessing (R)
+│   ├── womens_fb_data.md           # Data cleaning and preprocessing (R)
 │   ├── sentiment_message.ipynb     # Sentiment analysis for 'message' column (Python)
 │   ├── sentiment_description.ipynb # Sentiment analysis for 'page.description' column (Python)
 │   ├── neural_network.rmd          # Neural network modeling (R)
