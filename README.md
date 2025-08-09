@@ -14,12 +14,12 @@ We focus on uncovering how different post features (e.g., tone, content type, en
 
 ```plaintext
 .
-├── data/                          # Raw and cleaned datasets
 ├── scripts/
-│   ├── data_cleaning.R             # Data cleaning and preprocessing (R)
-│   ├── sentiment_message.py        # Sentiment analysis for 'message' column (Python)
+│   ├── data_cleaning.rmd           # Data cleaning and preprocessing (R)
+│   ├── womens_fb_data.md           # Data cleaning and preprocessing (R)
+│   ├── sentiment_message.ipynb     # Sentiment analysis for 'message' column (Python)
 │   ├── sentiment_description.ipynb # Sentiment analysis for 'page.description' column (Python)
-│   ├── neural_network.R            # Neural network modeling (R)
+│   ├── neural_network.rmd          # Neural network modeling (R)
 │   ├── eda_missingness.ipynb       # Exploratory Data Analysis for missingness (Python)
 ├── docs/
 │   ├── data_dictionary.md          # Data dictionary for all columns

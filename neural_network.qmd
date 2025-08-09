@@ -5,6 +5,7 @@ editor: visual
 ---
 
 # Setup
+
 ```{r}
 #| message: false
 #| warning: false
@@ -24,6 +25,7 @@ path_data <- "data"
 ```
 
 # Reading data
+
 ```{r}
 data_full <- read_csv(here::here(path_data, "sentiment_women_v2.csv"), show_col_types = FALSE)
 ```
@@ -31,7 +33,9 @@ data_full <- read_csv(here::here(path_data, "sentiment_women_v2.csv"), show_col_
 ```{r}
 skimr::skim(data_full)
 ```
+
 # Splits
+
 ```{r}
 # seed set for reproducibility
 set.seed(12345)
@@ -49,6 +53,7 @@ data_test <- splits |> assessment()
 ```
 
 # Data prep
+
 ```{r}
 skimr::skim(data_trn)
 
@@ -56,10 +61,10 @@ data_trn <- data_trn |>
   mutate(across(where(is.character), factor))
 ```
 
-
 # Fit models
 
 ## Prep and bake
+
 ```{r}
 #| message: false
 #| warning: false
@@ -78,6 +83,7 @@ feat_trn <- rec_prep |>
 ```
 
 # Model fitting
+
 ```{r}
 set.seed(12345)
 fit_seeds <- sample.int(10^5, size = 3)
@@ -104,4 +110,3 @@ test_metrics <- test_preds %>%
 nn_test_rmse <- rmse_vec(truth = feat_test$statistics.actual.likeCount, 
                            estimate = predict(fit_nn, feat_test)$.pred)
 ```
-
