@@ -1,0 +1,163 @@
+---
+title: "Neural Network Predictive Modeling"
+execute:
+  echo: true
+  output: true
+format: 
+  markdown:
+    embed-resources: true
+    toc: true
+    toc-depth: 4
+  html: 
+    embed-resources: true
+    toc: true 
+    toc_depth: 4
+editor: visual
+---
+
+# Setup
+```{r}
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(tidymodels)
+library(discrim, exclude = "smoothness")
+library(MASS, exclude = "select")
+library(Matrix, exclude = c("expand", "pack", "unpack"))
+library(keras, exclude = "get_weights")
+library(magrittr, exclude = c("set_names", "extract"))
+
+cl <- parallel::makePSOCKcluster(parallel::detectCores(logical = FALSE))
+doParallel::registerDoParallel(cl)
+
+path_data <- "data"
+```
+
+# Reading data
+```{r}
+data_full <- read_csv(here::here(path_data, "sentiment_women_v5.csv"), show_col_types = FALSE)
+```
+
+# Splits
+```{r}
+# seed set for reproducibility
+set.seed(12345)
+
+data <- data_full |>
+  select(date, type, statistics.actual.likeCount:account.name, 
+         account.subscriberCount, account.pageCreatedDate, 
+         acc_category:account.pageDescription_score) |>
+  select(-time_posted)
+
+data <- data |>
+  mutate(across(where(is.character), factor))
+
+data <- data |> select(-account.pageCreatedDate)
+
+splits <- data |> initial_split(prop = 2/3, strata = "statistics.actual.likeCount", breaks = 3)
+
+data_trn <- splits |> analysis() |> glimpse() # |> 
+  write_csv(here::here(path_data, "data_trn.csv"))
+  
+data_test <- splits |> assessment() # |> 
+  write_csv(here::here(path_data, "data_test.csv"))
+```
+
+# Data prep
+```{r}
+data_trn <- data_trn |>
+  mutate(across(where(is.character), factor))
+
+skimr::skim(data_trn)
+```
+
+
+# Fit models
+
+## Prep and bake
+```{r}
+#| message: false
+#| warning: false
+
+rec <- recipe(statistics.actual.likeCount ~ ., data = data_trn) |>
+  # handle datetime variables
+  step_time(date, features = c("hour", "minute", "second")) |>
+  step_date(date_posted, features = c("year", "month", "mday")) |>
+  step_rm(date) |>
+  step_rm(date_posted) |>
+  # handle missing data
+  step_impute_mode(acc_category) |>
+  step_impute_mode(account_verified_binary) |>
+  # normalization
+  step_zv(all_predictors()) |>
+  step_normalize(all_numeric_predictors()) |>
+  step_dummy(all_factor_predictors()) |>
+  #decorrelating (important due to account groupings)
+  step_pca(all_numeric_predictors())
+
+rec_prep <- rec |>
+  prep(data_trn)
+
+feat_trn <- rec_prep |>
+  bake(NULL)
+```
+
+# Model fitting
+
+```{r}
+set.seed(12345)
+fit_seeds <- sample.int(10^5, size = 3)
+```
+
+## Hyperparameter tuning
+```{r}
+#| message: false
+#| warning: false
+
+set.seed(43)
+splits_val <-
+  data_trn |> 
+  validation_split(prop = 4/5)
+
+grid_keras <- expand_grid(hidden_units = c(10, 30, 50, 70),
+                          activation = c("softmax", "relu"), 
+                          penalty = c(.00001, .0001, .01))
+
+fits_nn <-
+  mlp(hidden_units = tune(), activation = tune(), penalty = tune()) |>
+  set_mode("regression") |> 
+  set_engine("keras", verbose = 0, seeds = fit_seeds) |>
+  tune_grid(preprocessor = rec,
+              grid = grid_keras,
+              resamples = splits_val,
+              metrics = metric_set(rmse)
+              )
+
+show_best(fits_nn)
+```
+## Best model fit on test
+```{r}
+best_fit_nn <- 
+  mlp(hidden_units = 10, activation = "relu", penalty = 0.0001) |>
+  set_mode("regression") |> 
+  set_engine("keras", verbose = 0, seeds = fit_seeds) |>
+  fit(statistics.actual.likeCount ~ ., data = feat_trn)
+```
+
+```{r}
+feat_test <- rec_prep |> bake(data_test)
+
+estimate = predict(best_fit_nn, feat_test)$.pred
+
+test_preds <- predict(best_fit_nn, new_data = feat_test)
+test_preds$.pred <- pmax(test_preds$.pred, 0)
+
+test_preds <- test_preds %>%
+  bind_cols(data_test %>% select(statistics.actual.likeCount))
+
+test_metrics <- test_preds %>%
+  metrics(truth = statistics.actual.likeCount, estimate = .pred)
+
+(test_metrics)
+```
