@@ -1,15 +1,17 @@
 ---
-title: "Neural Network Predictive Modeling"
+title: "Facebook Groups Data Cleaning"
+execute:
+  echo: true
+  output: true
 format: 
   markdown:
     embed-resources: true
+    toc: true 
+    toc_depth: 4
   html: 
     embed-resources: true
     toc: true 
     toc_depth: 4
-execute:
-  echo: true
-  output: true
 editor: visual
 ---
 
@@ -39,6 +41,7 @@ path_data <- "data"
 ```
 
 # read in full dataset
+
 ```{r}
 df <- read_csv(here::here(path_data, "womens_orgs_WI_FB.csv"), show_col_types = FALSE)
 names(df)
@@ -54,10 +57,11 @@ df_t <- df |>
 df_t |> count(account.handle)
 df_t |> count(account.name)
 ```
+
 > Given the inconsistent number of levels, we believe that "account.name" may be a more accurate "username" type metric.
 
-
 # Variable selection
+
 ```{r}
 df1 <- df |>
   select(date, type, 
@@ -69,10 +73,13 @@ df1 <- df |>
 
 df1 |> write_csv(here::here(path_data, "cleaned_womens_orgs_WI_FB.csv"))
 ```
+
 > Process for selecting variables was decided while looking at the raw data, checking to see if responses were understandable/comprehensible, or could be cleaned. Uploaded for missingness EDA in Python.
 
 # Checking variable levels
+
 Type:
+
 ```{r}
 df2 <- df1 |>
   mutate(type = factor(type),
@@ -82,13 +89,16 @@ df2 <- df1 |>
 levels(df2$type)
 df2 |> count(type)
 ```
+
 > All reasonable types, 1407 NA which we will keep an eye on but is about 5% of dataset so can be imputed later.
 
 Account verified:
+
 ```{r}
 unique(df2$account.verified)
 df2 |> count(account.verified)
 ```
+
 > Date value and "and connections" are confusions here, caused by some kind of dataset issue. The date is, from rudimentary research on the platform, the date of verification, and the organization is under general verification. "and connections" is part of a sentence that got clipped across columns and does not particularly indicate verification or otherwise, so will be transformed to NA. With that, we end up with about 20% missing data. Could still reasonably impute.
 
 ```{r}
@@ -103,10 +113,12 @@ df2 |> count(account_verified_binary)
 ```
 
 Account category
+
 ```{r}
 unique(df2$acc_category)
 df2 |> count(acc_category)
 ```
+
 > Useful variable that we want to keep, especially since multiple organizations (account.name) are associated with certain categories, but date variables cause some issues. Will bucket into a "None/other" category, and impute NAs during recipe building.
 
 ```{r}
@@ -121,15 +133,19 @@ df2 <- df2 |>
 
 df2 |> count(acc_category)
 ```
+
 Media
+
 ```{r}
 # unique(df2$media)
 ```
+
 > While a promising variable during eyeballing, cross-referencing between Python EDA and this file, the unique levels cannot be cleaned appropriately.
 
 # Addressing missingness
 
 ## Removing empty observations
+
 ```{r}
 # type cleaning
 df3 <- df2 |>
@@ -139,29 +155,33 @@ df3 <- df2 |>
 
 # df3 |> write_csv(here::here(path_data, "2cleaned_womens_orgs_WI_FB.csv"))
 ```
+
 > Cross-referenced with missingness EDA, rows that do not have a valid datetime are empty. This drops 2110 observations. Continuous cross-reference with missingness EDA shows that this removes a good portion of the missingness we saw in the original EDA. (Completed in tandem during class.)
 
 ## New binary variables
+
 ```{r}
 df4 <- df3 |>
   mutate(title_binary = if_else(is.na(title), "no text", "has title"),
          caption_binary = if_else(is.na(caption), "no text", "has caption"),
          description_binary = if_else(is.na(description), "no text", "has desc"))
 ```
+
 > The next biggest concern was that many posts did not have titles, captions, or descriptions. These are optional formats in Facebook posts, which makes sense. After looking at many of the unique outputs, these strings could be useful with sentiment analysis added, but the strong amount of missingness means that imputation may not be meaningful. We have opted to create binaries for if posts do or do not have titles, captions, and descriptions; these are eye-grabbing parts of a post that may determine engagement. Future directions may include more nuanced sentiment analysis or NLP.
 
 # Changing date variables
+
 > Tidymodels is capable of handling datetime format data, so this will be applied as best practice for this variable format.
 
 # Date split
+
 ```{r}
 df5 <- df4 |>
   mutate(time_posted = str_extract(date, "(?<= ).*"),
          date_posted = str_extract(date, "^([^ ]+)")) |>
-  mutate(time_posted = as.POSIXct(time_posted, format = "%H:%M:%S"),
-         date_posted = as.Date(date_posted))
+  mutate(date_posted = as.Date(date_posted))
 ```
-
+> Split up date and time, because time-of-day posted (ex. afternoon, evening) may be important to engagement separate from the original date posted, where likes/comments/share may accrue over time.
 
 ```{r}
 df5 |>
@@ -174,14 +194,8 @@ df5 <- df5 |>
 > Due to the existence of some non-date variables, which are automatically transformed into NAs by the as.POSIXct (datetime format) we end up with 10271 NAs. This could plausibly be imputed, but again the amount of missingness is very high. This variable will not be used. Unlike title, caption, and description, the lack of a creation date is not meaningful to how many likes a post gets.
 
 # Save cleaned file
+
 ```{r}
 df5 |>
   write_csv(here::here(path_data, "sentiment_women_v4.csv"))
 ```
-
-
-
-
-
-
-
