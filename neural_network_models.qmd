@@ -89,6 +89,7 @@ rec <- recipe(statistics.actual.likeCount ~ ., data = data_trn) |>
   # handle missing data
   step_impute_mode(acc_category) |>
   step_impute_mode(account_verified_binary) |>
+  step_rm(account_verified_binary) |>
   # normalization
   step_zv(all_predictors()) |>
   step_normalize(all_numeric_predictors()) |>
@@ -115,7 +116,7 @@ fit_seeds <- sample.int(10^5, size = 3)
 #| message: false
 #| warning: false
 
-set.seed(43)
+set.seed(12345)
 splits_val <-
   data_trn |> 
   validation_split(prop = 4/5)
@@ -139,7 +140,7 @@ show_best(fits_nn)
 ## Best model fit on test
 ```{r}
 best_fit_nn <- 
-  mlp(hidden_units = 10, activation = "relu", penalty = 0.0001) |>
+  mlp(hidden_units = 10, activation = "relu", penalty = 0.01) |>
   set_mode("regression") |> 
   set_engine("keras", verbose = 0, seeds = fit_seeds) |>
   fit(statistics.actual.likeCount ~ ., data = feat_trn)
@@ -148,7 +149,7 @@ best_fit_nn <-
 ```{r}
 feat_test <- rec_prep |> bake(data_test)
 
-estimate = predict(best_fit_nn, feat_test)$.pred
+preds = predict(best_fit_nn, feat_test)$.pred
 
 test_preds <- predict(best_fit_nn, new_data = feat_test)
 test_preds$.pred <- pmax(test_preds$.pred, 0)
@@ -156,6 +157,8 @@ test_preds$.pred <- pmax(test_preds$.pred, 0)
 
 test_preds <- test_preds %>%
   bind_cols(data_test %>% select(statistics.actual.likeCount))
+
+head(test_preds, 5)
 
 test_metrics <- test_preds %>%
   metrics(truth = statistics.actual.likeCount, estimate = .pred)
