@@ -19,7 +19,7 @@ We focus on uncovering how different post features (e.g., tone, content type, en
 │   ├── womens_fb_data.md           # Data cleaning and preprocessing (R)
 │   ├── sentiment_message.ipynb     # Sentiment analysis for 'message' column (Python)
 │   ├── sentiment_description.ipynb # Sentiment analysis for 'page.description' column (Python)
-│   ├── neural_network.rmd          # Neural network modeling (R)
+│   ├── neural_network_models.rmd          # Neural network modeling (R)
 │   ├── eda_missingness.ipynb       # Exploratory Data Analysis for missingness (Python)
 ├── docs/
 │   ├── data_dictionary.md          # Data dictionary for all columns
@@ -75,13 +75,3 @@ See the **[data dictionary](docs/data_dictionary.md)** for full details.
 - **Python**: Sentiment analysis, EDA for missingness  
 - **Quarto**: Project documentation  
 - **Markdown**: Data dictionary
-
----
-
-## 📜 License
-This project is licensed under the MIT License.
-
----
-
-## ✨ Acknowledgements
-We thank the organizations and open data contributors whose content made this research possible.
