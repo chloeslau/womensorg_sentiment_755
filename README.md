@@ -19,9 +19,9 @@ We focus on uncovering how different post features (e.g., tone, content type, en
 │   ├── womens_fb_data.md           # Data cleaning and preprocessing (R)
 │   ├── sentiment_message.ipynb     # Sentiment analysis for 'message' column (Python)
 │   ├── sentiment_description.ipynb # Sentiment analysis for 'page.description' column (Python)
-│   ├── neural_network_models.html          # Neural network modeling (HTML)
-│   ├── neural_network_models.md          # Neural network modeling (Markdown)
-│   ├── neural_network_models.rmd          # Neural network modeling (R)
+│   ├── neural_network_models.html  # Neural network modeling (HTML)
+│   ├── neural_network_models.md    # Neural network modeling (Markdown)
+│   ├── neural_network_models.rmd   # Neural network modeling (R)
 │   ├── eda_missingness.ipynb       # Exploratory Data Analysis for missingness (Python)
 ├── docs/
 │   ├── data_dictionary.md          # Data dictionary for all columns
